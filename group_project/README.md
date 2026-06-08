@@ -170,9 +170,33 @@ run_dashboard()
 
 ## Kiến Trúc Hệ Thống
 
+```mermaid
+flowchart LR
+    subgraph data [Data Layer — Task 1-3]
+        L1[data/landing/legal PDF]
+        L2[data/landing/news JSON]
+        STD[data/standardized Markdown]
+    end
+
+    subgraph rag [RAG Pipeline — Task 4-10]
+        IDX[Chunking + BGE-M3 Index]
+        RET[Hybrid Retrieval BM25 + Semantic]
+        GEN[Generation + Citation]
+    end
+
+    subgraph ui [Group Product — TODO]
+        APP[Streamlit / Chainlit Chatbot]
+        EVAL[DeepEval / RAGAS Evaluation]
+    end
+
+    L1 --> STD
+    L2 --> STD
+    STD --> IDX --> RET --> GEN
+    GEN --> APP
+    GEN --> EVAL
 ```
-[Vẽ diagram kiến trúc ở đây]
-```
+
+**Đóng góp hiện tại:** Nguyễn Văn Chung đã hoàn thành lớp Data (Task 1–3) tại root và pipeline RAG đầy đủ trong `personal_report/2A202600647-NguyenVanChung/`. Chatbot và evaluation pipeline chưa triển khai.
 
 ---
 
@@ -180,7 +204,7 @@ run_dashboard()
 
 | Thành viên | MSSV | Nhiệm vụ | Trạng thái |
 |-----------|------|----------|------------|
-| | | | |
+| Nguyễn Văn Chung | 2A202600647 | Nhóm Task 1–3 (thu thập, crawl, convert); Bài cá nhân Task 1–10 | Hoàn thành |
 | | | | |
 | | | | |
 | | | | |
@@ -193,10 +217,8 @@ run_dashboard()
 # Cài đặt dependencies
 pip install -r requirements.txt
 
-# Chạy app
+# Chạy RAG Chatbot UI (Streamlit)
 streamlit run app.py
-# hoặc
-chainlit run app.py
 ```
 
 ---
