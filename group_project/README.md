@@ -1,226 +1,282 @@
-# Bài Tập Nhóm — Search Engine / RAG Chatbot
+# Báo cáo nhóm - RAG Chatbot pháp luật ma túy
 
-## Mục Tiêu
+## 1. Thông tin nhóm
 
-Sau khi hoàn thành bài cá nhân, nhóm ngồi lại để xây dựng **1 trong 2 sản phẩm**:
+| Thành viên | MSSV | Nhánh / phần đóng góp chính | Trạng thái |
+| --- | --- | --- | --- |
+| Nguyễn Văn Chung | 2A202600647 | Task 1-3: thu thập tài liệu pháp luật, crawl tin tức, chuẩn hóa dữ liệu Markdown | Hoàn thành |
+| Vũ Thanh Danh | 2A202600606 | Task 4-6: chunking/indexing, semantic search, lexical search | Hoàn thành |
+| Ngô Thanh Tình | 2A202600919 | Task 7-10: reranking, PageIndex/vectorless, retrieval pipeline, generation có citation | Hoàn thành |
+| Cao Việt Hoàng | 2A202600779 | Giao diện RAG chatbot bằng Streamlit | Hoàn thành |
+| Võ Duy Bảo | 2A202600648 | Evaluation pipeline, golden dataset, báo cáo đánh giá | Hoàn thành |
 
----
+## 2. Mục tiêu dự án
 
-## Yêu cầu 1:  Sản phẩm nhóm RAG Chatbot
+Nhóm xây dựng một hệ thống RAG Chatbot phục vụ hỏi đáp về pháp luật phòng, chống ma túy và một số tin tức liên quan. Hệ thống cần trả lời dựa trên tài liệu đã truy xuất, có citation, hiển thị nguồn tham khảo và có thể chạy demo bằng giao diện Streamlit.
 
-Xây dựng chatbot trả lời câu hỏi về pháp luật ma tuý và tin tức liên quan.
+Sản phẩm cuối gồm:
 
-**Yêu cầu:**
-- Giao diện chat (Streamlit / Gradio / Chainlit)
-- Trả lời có citation (dựa trên Task 10)
-- Hỗ trợ follow-up questions (conversation memory)
-- Hiển thị source documents đã dùng
+- Pipeline xử lý dữ liệu từ PDF/JSON sang Markdown chuẩn hóa.
+- Pipeline tìm kiếm gồm semantic search, lexical search, hybrid retrieval và reranking.
+- Module generation trả lời có citation và hạn chế hallucination.
+- Giao diện chatbot để người dùng hỏi đáp trực tiếp.
+- Bộ evaluation gồm 15 câu hỏi kiểm thử, script chạy đánh giá và báo cáo kết quả.
 
-**Stack gợi ý:**
-```
-Chainlit/Streamlit → Retrieval (Task 9) → Generation (Task 10) → Display
-```
-
----
-
-## Yêu cầu 2: RAG Evaluation Pipeline
-
-Sử dụng **1 trong 3 framework** sau để evaluate pipeline RAG của nhóm:
-
-### Framework lựa chọn
-
-| Framework | Cài đặt | Đặc điểm |
-|-----------|---------|-----------|
-| [DeepEval](https://github.com/confident-ai/deepeval) | `pip install deepeval` | Nhiều metric built-in, dễ integrate với pytest |
-| [RAGAS](https://github.com/explodinggradients/ragas) | `pip install ragas` | Chuẩn industry cho RAG eval, 3 trục chính |
-| [TruLens](https://github.com/truera/trulens) | `pip install trulens` | Dashboard UI, feedback functions mạnh |
-
-### Yêu cầu Evaluation
-
-1. **Tạo Golden Dataset** — tối thiểu 15 cặp Q&A (question, expected_answer, expected_context)
-2. **Chạy evaluation** trên toàn bộ golden dataset với các metrics sau:
-   - **Faithfulness** — câu trả lời có bám đúng context không?
-   - **Answer Relevance** — câu trả lời có đúng câu hỏi không?
-   - **Context Recall** — retriever có lấy đủ evidence không?
-   - **Context Precision** — trong context lấy về, bao nhiêu % thực sự hữu ích?
-3. **So sánh A/B** — chạy eval trên ít nhất 2 config khác nhau (ví dụ: có reranking vs không reranking, hoặc hybrid vs dense-only)
-4. **Báo cáo** — bảng điểm + phân tích worst performers + đề xuất cải tiến
-
-### Code mẫu — DeepEval
-
-```python
-from deepeval import evaluate
-from deepeval.metrics import (
-    FaithfulnessMetric,
-    AnswerRelevancyMetric,
-    ContextualRecallMetric,
-    ContextualPrecisionMetric,
-)
-from deepeval.test_case import LLMTestCase
-
-# Tạo test cases từ golden dataset
-test_cases = []
-for item in golden_dataset:
-    result = rag_pipeline.generate_with_citation(item["question"])
-    test_case = LLMTestCase(
-        input=item["question"],
-        actual_output=result["answer"],
-        expected_output=item["expected_answer"],
-        retrieval_context=[c["content"] for c in result["sources"]],
-    )
-    test_cases.append(test_case)
-
-# Chạy evaluation
-metrics = [
-    FaithfulnessMetric(threshold=0.7),
-    AnswerRelevancyMetric(threshold=0.7),
-    ContextualRecallMetric(threshold=0.7),
-    ContextualPrecisionMetric(threshold=0.7),
-]
-
-results = evaluate(test_cases, metrics)
-```
-
-### Code mẫu — RAGAS
-
-```python
-from ragas import evaluate
-from ragas.metrics import (
-    faithfulness,
-    answer_relevancy,
-    context_recall,
-    context_precision,
-)
-from datasets import Dataset
-
-# Chuẩn bị data
-eval_data = {
-    "question": [],
-    "answer": [],
-    "contexts": [],
-    "ground_truth": [],
-}
-
-for item in golden_dataset:
-    result = rag_pipeline.generate_with_citation(item["question"])
-    eval_data["question"].append(item["question"])
-    eval_data["answer"].append(result["answer"])
-    eval_data["contexts"].append([c["content"] for c in result["sources"]])
-    eval_data["ground_truth"].append(item["expected_answer"])
-
-dataset = Dataset.from_dict(eval_data)
-
-# Chạy evaluation
-result = evaluate(
-    dataset,
-    metrics=[faithfulness, answer_relevancy, context_recall, context_precision],
-)
-print(result.to_pandas())
-```
-
-### Code mẫu — TruLens
-
-```python
-from trulens.apps.custom import TruCustomApp, instrument
-from trulens.core import Feedback
-from trulens.providers.openai import OpenAI as TruOpenAI
-
-provider = TruOpenAI()
-
-# Define feedback functions
-f_faithfulness = Feedback(provider.groundedness_measure_with_cot_reasons).on_output()
-f_relevance = Feedback(provider.relevance).on_input_output()
-f_context_relevance = Feedback(provider.context_relevance).on_input()
-
-# Wrap RAG pipeline
-tru_rag = TruCustomApp(
-    rag_pipeline,
-    app_name="DrugLaw_RAG",
-    feedbacks=[f_faithfulness, f_relevance, f_context_relevance],
-)
-
-# Run evaluation
-with tru_rag as recording:
-    for item in golden_dataset:
-        rag_pipeline.generate_with_citation(item["question"])
-
-# View dashboard
-from trulens.dashboard import run_dashboard
-run_dashboard()
-```
-
-### Deliverable Evaluation
-
-- [ ] File `group_project/evaluation/golden_dataset.json` — 15+ cặp Q&A
-- [ ] File `group_project/evaluation/eval_pipeline.py` — script chạy evaluation
-- [ ] File `group_project/evaluation/results.md` — bảng điểm + phân tích
-- [ ] So sánh A/B ít nhất 2 configs
-
----
-
-## Yêu Cầu Chung
-
-1. **Tích hợp pipeline** từ bài cá nhân của các thành viên
-2. **Demo hoạt động được** trong buổi trình bày (chạy local hoặc deploy)
-3. **Evaluation pipeline** chạy được và có báo cáo kết quả
-4. **Code push lên repository** chung của nhóm
-5. **README** mô tả kiến trúc và phân công (điền bên dưới)
-
----
-
-## Kiến Trúc Hệ Thống
+## 3. Kiến trúc hệ thống
 
 ```mermaid
 flowchart LR
-    subgraph data [Data Layer — Task 1-3]
-        L1[data/landing/legal PDF]
-        L2[data/landing/news JSON]
-        STD[data/standardized Markdown]
-    end
-
-    subgraph rag [RAG Pipeline — Task 4-10]
-        IDX[Chunking + BGE-M3 Index]
-        RET[Hybrid Retrieval BM25 + Semantic]
-        GEN[Generation + Citation]
-    end
-
-    subgraph ui [Group Product — TODO]
-        APP[Streamlit / Chainlit Chatbot]
-        EVAL[DeepEval / RAGAS Evaluation]
-    end
-
-    L1 --> STD
-    L2 --> STD
-    STD --> IDX --> RET --> GEN
-    GEN --> APP
-    GEN --> EVAL
+    A[data/landing/legal PDF] --> C[data/standardized Markdown]
+    B[data/landing/news JSON] --> C
+    C --> D[Task 4 Chunking + Indexing]
+    D --> E[Task 5 Semantic Search]
+    D --> F[Task 6 Lexical Search]
+    E --> G[Task 9 Hybrid Retrieval]
+    F --> G
+    G --> H[Task 7 Reranking]
+    H --> I[Task 10 Generation + Citation]
+    I --> J[Streamlit Chatbot]
+    I --> K[Evaluation Pipeline]
 ```
 
-**Đóng góp hiện tại:** Nguyễn Văn Chung đã hoàn thành lớp Data (Task 1–3) tại root và pipeline RAG đầy đủ trong `personal_report/2A202600647-NguyenVanChung/`. Chatbot và evaluation pipeline chưa triển khai.
+Luồng xử lý chính:
 
----
+1. Dữ liệu đầu vào nằm trong `data/landing`, gồm văn bản pháp luật dạng PDF và tin tức dạng JSON.
+2. Task 3 chuyển dữ liệu sang Markdown trong `data/standardized`.
+3. Task 4 chia tài liệu thành chunks và tạo index.
+4. Task 5 và Task 6 thực hiện tìm kiếm semantic và lexical.
+5. Task 9 kết hợp kết quả bằng hybrid retrieval, ưu tiên đúng loại tài liệu theo câu hỏi.
+6. Task 7 rerank để đưa nguồn liên quan nhất lên đầu.
+7. Task 10 sinh câu trả lời có citation, chỉ kết luận dựa trên nguồn truy xuất được.
+8. Streamlit hiển thị hội thoại và nguồn tài liệu tham khảo.
 
-## Phân Công Công Việc
+## 4. Phân công và kết quả từng thành viên
 
-| Thành viên | MSSV | Nhiệm vụ | Trạng thái |
-|-----------|------|----------|------------|
-| Nguyễn Văn Chung | 2A202600647 | Nhóm Task 1–3 (thu thập, crawl, convert); Bài cá nhân Task 1–10 | Hoàn thành |
-| | | | |
-| | | | |
-| | | | |
+### 4.1. Nguyễn Văn Chung - 2A202600647
 
----
+Phụ trách Task 1-3.
 
-## Hướng Dẫn Chạy
+Công việc đã làm:
 
-```bash
-# Cài đặt dependencies
+- Thu thập tài liệu pháp luật liên quan đến phòng, chống ma túy.
+- Bổ sung các file PDF trong `data/landing/legal`.
+- Crawl hoặc chuẩn bị dữ liệu tin tức trong `data/landing/news`.
+- Chuẩn hóa tài liệu sang Markdown trong `data/standardized`.
+
+Kết quả đạt được:
+
+- Có dữ liệu pháp luật nền tảng để hệ thống RAG truy xuất.
+- Có tài liệu Nghị định 105/2021/NĐ-CP, Nghị định 57/2022/NĐ-CP và Luật Phòng, chống ma túy 2021.
+- Dữ liệu đã được chuẩn hóa để các task phía sau có thể chunk, index và search.
+
+### 4.2. Vũ Thanh Danh - 2A202600606
+
+Phụ trách Task 4-6.
+
+Công việc đã làm:
+
+- Xây dựng logic chia tài liệu thành chunks.
+- Tạo indexing cho dữ liệu chuẩn hóa.
+- Triển khai semantic search để tìm kiếm theo ngữ nghĩa.
+- Triển khai lexical search/BM25 để tìm kiếm theo từ khóa chính xác.
+
+Kết quả đạt được:
+
+- Hệ thống có lớp tìm kiếm cơ bản phục vụ retrieval.
+- Có thể truy xuất tài liệu theo cả ngữ nghĩa và từ khóa.
+- Tạo nền cho hybrid retrieval ở Task 9.
+
+### 4.3. Ngô Thanh Tình - 2A202600919
+
+Phụ trách Task 7-10.
+
+Công việc đã làm:
+
+- Triển khai reranking để sắp xếp lại các chunks theo độ liên quan.
+- Xây dựng PageIndex/vectorless retrieval.
+- Xây dựng retrieval pipeline kết hợp semantic search, lexical search và reranking.
+- Xây dựng generation pipeline trả lời có citation.
+- Cải thiện độ chính xác chatbot cho các câu hỏi pháp luật quan trọng.
+
+Kết quả đạt được:
+
+- Chatbot trả lời dựa trên nguồn đã truy xuất thay vì trả lời tự do.
+- Với câu hỏi tổng quan về Luật Phòng, chống ma túy và Nghị định 105/2021/NĐ-CP, hệ thống ưu tiên đọc toàn văn tài liệu chuẩn hóa để tóm tắt chính xác hơn.
+- Với câu hỏi về mức phạt/tội danh nhưng thiếu nguồn Bộ luật Hình sự, hệ thống không tự bịa con số mà cảnh báo không đủ căn cứ.
+- Câu trả lời có citation dạng tên file nguồn.
+
+### 4.4. Cao Việt Hoàng - 2A202600779
+
+Phụ trách giao diện chatbot.
+
+Công việc đã làm:
+
+- Xây dựng giao diện Streamlit cho chatbot.
+- Hiển thị khung chat giữa người dùng và trợ lý.
+- Hiển thị phần nguồn tài liệu tham khảo.
+- Tích hợp UI với hàm generation của pipeline.
+
+Kết quả đạt được:
+
+- Ứng dụng có thể chạy bằng `streamlit run app.py`.
+- Người dùng có thể nhập câu hỏi và nhận câu trả lời trực tiếp trên giao diện web.
+- Có khu vực mở rộng để xem nguồn tài liệu được dùng.
+
+### 4.5. Võ Duy Bảo - 2A202600648
+
+Phụ trách evaluation.
+
+Công việc đã làm:
+
+- Tạo golden dataset gồm 15 câu hỏi kiểm thử.
+- Viết script chạy evaluation trong `group_project/evaluation/eval_pipeline.py`.
+- So sánh 2 cấu hình retrieval/generation.
+- Viết báo cáo kết quả trong `group_project/evaluation/results.md`.
+
+Kết quả đạt được:
+
+- Có bộ kiểm thử để đánh giá pipeline RAG.
+- Có báo cáo các chỉ số Faithfulness, Answer Relevance, Context Recall và Context Precision.
+- Có phân tích worst performers và đề xuất hướng cải thiện.
+
+## 5. Các cải thiện mới nhất về độ chính xác
+
+Trong quá trình kiểm thử chatbot, nhóm phát hiện một số câu hỏi tổng quan bị trả lời bằng các đoạn phụ lục hoặc biểu mẫu không phù hợp. Ví dụ câu hỏi “tóm tắt nội dung nghị định 105 năm 2021” từng bị lấy nhầm nội dung “phiếu kết quả xét nghiệm chất ma túy”.
+
+Nhóm đã cập nhật:
+
+- Tăng số lượng ứng viên retrieval trước khi rerank.
+- Ưu tiên tài liệu pháp luật khi câu hỏi thuộc miền pháp luật.
+- Thêm xử lý riêng cho câu hỏi tổng quan/tóm tắt về Nghị định 105/2021/NĐ-CP.
+- Bỏ qua phần phụ lục, biểu mẫu khi người dùng yêu cầu tóm tắt nội dung nghị định.
+- Thêm cơ chế trả lời thận trọng khi nguồn hiện có không đủ căn cứ pháp lý.
+
+Ví dụ câu hỏi nên dùng để demo:
+
+```text
+tóm tắt nội dung nghị định 105 năm 2021
+```
+
+Kết quả mong đợi:
+
+- Chatbot nêu đúng đây là Nghị định số 105/2021/NĐ-CP ban hành ngày 04/12/2021.
+- Nêu đúng nội dung chính là quy định chi tiết và hướng dẫn thi hành một số điều của Luật Phòng, chống ma túy.
+- Tóm tắt các phần chính như phạm vi điều chỉnh, đối tượng áp dụng, phối hợp cơ quan chuyên trách, kiểm soát hoạt động hợp pháp liên quan đến ma túy, quản lý người sử dụng trái phép chất ma túy, trách nhiệm cơ quan và hiệu lực thi hành.
+- Không lấy nhầm phụ lục/biểu mẫu làm nội dung chính.
+
+## 6. Cấu trúc thư mục quan trọng
+
+```text
+Day08_RAG_pipeline_cohort2/
+├── app.py
+├── data/
+│   ├── landing/
+│   │   ├── legal/
+│   │   └── news/
+│   └── standardized/
+├── src/
+│   ├── task1_collect_legal_docs.py
+│   ├── task2_crawl_news.py
+│   ├── task3_convert_markdown.py
+│   ├── task4_chunking_indexing.py
+│   ├── task5_semantic_search.py
+│   ├── task6_lexical_search.py
+│   ├── task7_reranking.py
+│   ├── task8_pageindex_vectorless.py
+│   ├── task9_retrieval_pipeline.py
+│   └── task10_generation.py
+├── group_project/
+│   ├── README.md
+│   ├── demo_notes.md
+│   └── evaluation/
+│       ├── golden_dataset.json
+│       ├── eval_pipeline.py
+│       └── results.md
+└── tests/
+```
+
+## 7. Hướng dẫn cài đặt và chạy chatbot
+
+Cài dependencies:
+
+```powershell
 pip install -r requirements.txt
+```
 
-# Chạy RAG Chatbot UI (Streamlit)
+Chạy giao diện chatbot:
+
+```powershell
 streamlit run app.py
 ```
 
----
+Mở trình duyệt tại:
 
-## Lưu ý: Hãy giữ lại repo này nếu như bạn học track 3 giai đoạn 2, chúng ta sẽ phát triển tiếp dự án lên knowledge graph để khắc phục các câu hỏi hóc búa khi có các câu hỏi khó.
+```text
+http://localhost:8501
+```
+
+Một số câu hỏi demo:
+
+```text
+luật về phòng chống ma túy ở VN
+```
+
+```text
+tóm tắt nội dung nghị định 105 năm 2021
+```
+
+```text
+Hình phạt cho tội tàng trữ trái phép chất ma túy là gì?
+```
+
+Lưu ý: với câu hỏi về hình phạt, nếu hệ thống chưa có nguồn Bộ luật Hình sự tương ứng, chatbot sẽ không tự kết luận mức phạt để tránh trả lời sai.
+
+## 8. Hướng dẫn chạy evaluation
+
+Chạy test tự động:
+
+```powershell
+pytest tests/ -v
+```
+
+Chạy evaluation nhóm:
+
+```powershell
+python group_project/evaluation/eval_pipeline.py
+```
+
+Kết quả evaluation được ghi tại:
+
+```text
+group_project/evaluation/results.md
+```
+
+## 9. Kết quả kiểm thử hiện tại
+
+Kết quả test gần nhất:
+
+```text
+35 passed
+```
+
+Evaluation pipeline đã chạy được với 15 test cases trong golden dataset. Báo cáo hiện có các nhóm chỉ số:
+
+- Faithfulness.
+- Answer Relevance.
+- Context Recall.
+- Context Precision.
+- So sánh A/B giữa cấu hình hybrid + rerank và dense-only.
+- Phân tích worst performers và đề xuất cải thiện.
+
+## 10. Kết luận
+
+Nhóm đã hoàn thành sản phẩm RAG Chatbot theo yêu cầu chính:
+
+- Có dữ liệu pháp luật và tin tức đã chuẩn hóa.
+- Có retrieval pipeline kết hợp nhiều phương pháp tìm kiếm.
+- Có generation trả lời kèm citation.
+- Có giao diện chatbot chạy được bằng Streamlit.
+- Có evaluation pipeline và báo cáo đánh giá.
+- Có phân công rõ ràng cho 5 thành viên, mỗi người phụ trách một phần độc lập và merge lại vào sản phẩm chung.
+
+Hướng cải thiện tiếp theo là bổ sung thêm nguồn Bộ luật Hình sự và các văn bản xử phạt liên quan để chatbot trả lời chính xác hơn các câu hỏi về tội danh, mức phạt và điều khoản hình sự.

@@ -27,6 +27,72 @@ DEFAULT_TOP_K = 5
 RERANK_METHOD = "cross_encoder"  # "cross_encoder" | "mmr" | "rrf"
 
 
+LEGAL_HINTS = {
+    "luật",
+    "luat",
+    "điều",
+    "dieu",
+    "nghị định",
+    "nghi dinh",
+    "hình phạt",
+    "hinh phat",
+    "bộ luật",
+    "bo luat",
+    "trách nhiệm hình sự",
+    "trach nhiem hinh su",
+    "cai nghiện",
+    "cai nghien",
+    "danh mục",
+    "danh muc",
+}
+
+NEWS_HINTS = {
+    "nghệ sĩ",
+    "nghe si",
+    "ca sĩ",
+    "ca si",
+    "diễn viên",
+    "dien vien",
+    "rapper",
+    "bị bắt",
+    "bi bat",
+    "tin tức",
+    "tin tuc",
+}
+
+
+def _preferred_doc_type(query: str) -> str | None:
+    normalized = query.lower()
+    if any(hint in normalized for hint in LEGAL_HINTS):
+        return "legal"
+    if any(hint in normalized for hint in NEWS_HINTS):
+        return "news"
+    return None
+
+
+def _apply_domain_preference(query: str, results: list[dict]) -> list[dict]:
+    preferred_type = _preferred_doc_type(query)
+    if not preferred_type:
+        return results
+
+    adjusted = []
+    for result in results:
+        item = result.copy()
+        metadata = item.get("metadata", {}) or {}
+        doc_type = str(metadata.get("type") or metadata.get("doc_type") or "").lower()
+        source = str(metadata.get("source") or metadata.get("path") or "").lower()
+        inferred_legal = doc_type == "legal" or "/legal/" in source or "legal" in source
+        inferred_news = doc_type == "news" or "/news/" in source or "article_" in source
+
+        if preferred_type == "legal" and inferred_legal:
+            item["score"] = float(item.get("score", 0.0) or 0.0) + 0.25
+        elif preferred_type == "news" and inferred_news:
+            item["score"] = float(item.get("score", 0.0) or 0.0) + 0.25
+        adjusted.append(item)
+
+    return sorted(adjusted, key=lambda x: x.get("score", 0.0), reverse=True)
+
+
 def retrieve(
     query: str,
     top_k: int = DEFAULT_TOP_K,
@@ -68,23 +134,24 @@ def retrieve(
     sparse_results: list[dict] = []
 
     try:
-        dense_results = semantic_search(query, top_k=top_k * 2)
+        dense_results = semantic_search(query, top_k=top_k * 4)
     except NotImplementedError:
         dense_results = []
     except Exception:
         dense_results = []
 
     try:
-        sparse_results = lexical_search(query, top_k=top_k * 2)
+        sparse_results = lexical_search(query, top_k=top_k * 4)
     except NotImplementedError:
         sparse_results = []
     except Exception:
         sparse_results = []
 
-    merged = rerank_rrf([dense_results, sparse_results], top_k=top_k * 2)
+    merged = rerank_rrf([dense_results, sparse_results], top_k=top_k * 4)
     for item in merged:
         item["source"] = "hybrid"
         item.setdefault("metadata", item.get("metadata", {}) or {})
+    merged = _apply_domain_preference(query, merged)
 
     if use_reranking and merged:
         try:
@@ -98,6 +165,7 @@ def retrieve(
         item["source"] = item.get("source", "hybrid")
         item.setdefault("metadata", item.get("metadata", {}) or {})
 
+    final_results = _apply_domain_preference(query, final_results)
     best_score = final_results[0]["score"] if final_results else 0.0
     if not final_results or best_score < score_threshold:
         fallback = pageindex_search(query, top_k=top_k)

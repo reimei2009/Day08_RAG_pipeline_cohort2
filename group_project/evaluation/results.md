@@ -2,7 +2,7 @@
 
 ## Framework sử dụng
 
-> **Heuristic Evaluator (Tự thiết lập bộ chỉ số đánh giá ngữ nghĩa & trích dẫn) (Mock RAG Generator Mode)**
+> **Heuristic Evaluator (Tự thiết lập bộ chỉ số đánh giá ngữ nghĩa & trích dẫn) kết hợp RAG Pipeline thật**
 
 ---
 
@@ -10,11 +10,11 @@
 
 | Metric | Config A (hybrid + rerank) | Config B (dense-only) | Δ |
 |--------|---------------------------|----------------------|---|
-| Faithfulness | 1.000 | 0.200 | +0.800 |
-| Answer Relevance | 0.743 | 0.473 | +0.270 |
-| Context Recall | 1.000 | 0.255 | +0.745 |
-| Context Precision | 1.000 | 0.867 | +0.133 |
-| **Average** | **0.936** | **0.449** | **+0.487** |
+| Faithfulness | 1.000 | 1.000 | +0.000 |
+| Answer Relevance | 0.743 | 0.743 | +0.000 |
+| Context Recall | 0.681 | 0.681 | +0.000 |
+| Context Precision | 1.000 | 1.000 | +0.000 |
+| **Average** | **0.856** | **0.856** | **+0.000** |
 
 ---
 
@@ -28,8 +28,8 @@
 *   Chỉ sử dụng Dense Vector Search thông qua Vector Database, không thực hiện Lexical Search, không kết hợp RRF và không có bước Reranking.
 
 **Kết luận:**
-*   **Config A vượt trội hoàn toàn** so với Config B trên cả 4 chỉ số đánh giá (điểm trung bình tổng tăng **+0.487**).
-*   Bước *Reranking* trong Config A giúp cải thiện rõ rệt chỉ số **Context Precision** và **Faithfulness**, do LLM nhận được ngữ cảnh cô đọng, chính xác hơn và có thông tin trích dẫn cụ thể (citation) rõ ràng hơn, hạn chế hiện tượng LLM bị mơ hồ thông tin ở giữa (lost in the middle).
+*   Trên bộ golden dataset hiện tại, Config A và Config B đang cho điểm trung bình bằng nhau (**0.856**), chưa thể hiện chênh lệch rõ ràng về mặt số liệu tổng hợp.
+*   Config A vẫn là cấu hình được ưu tiên cho sản phẩm demo vì kết hợp Hybrid Search và Reranking, phù hợp hơn với truy vấn pháp lý có cả từ khóa chính xác, số hiệu văn bản và ngữ nghĩa tự nhiên. Cần mở rộng golden dataset và bổ sung thêm câu hỏi khó để đo rõ hơn tác động của reranking.
 
 ---
 
@@ -37,9 +37,9 @@
 
 | # | Question | Faithfulness | Relevance | Recall | Failure Stage | Root Cause |
 |---|----------|-------------|-----------|--------|---------------|------------|
-| 1 | Chất ma túy Ketamine thuộc danh mục nào theo quy định pháp luật Việt Nam? | 0.20 | 0.36 | 0.00 | Retrieval Stage | Từ khóa tìm kiếm quá dài hoặc không tối ưu hóa các liên kết từ đồng nghĩa pháp lý. |
-| 2 | Danh mục II của Nghị định 57/2022/NĐ-CP quy định những chất ma túy như thế nào? | 0.20 | 0.57 | 0.00 | Retrieval Stage | Hệ thống tìm kiếm Dense-only không phân biệt tốt các ký tự La Mã (Danh mục II vs Danh mục I) và thiếu tính chính xác của Lexical search dẫn đến việc trả về sai phụ lục. |
-| 3 | Luật Phòng chống ma tuý 2021 quy định những hình thức cai nghiện nào? | 0.20 | 0.31 | 0.14 | Retrieval Stage | Từ khóa tìm kiếm quá dài hoặc không tối ưu hóa các liên kết từ đồng nghĩa pháp lý. |
+| 1 | Vụ việc ca sĩ Chi Dân bị lực lượng chức năng kiểm tra và phát hiện liên quan đến ma túy diễn ra khi nào? | 1.00 | 0.73 | 0.23 | Retrieval Stage & Generation Stage | Dữ liệu tin tức mới phát sinh chưa được lập chỉ mục đầy đủ, hệ thống không tìm thấy context khớp và mô hình tạo câu trả lời không thể đưa ra trích dẫn cụ thể. |
+| 2 | Tội tổ chức sử dụng trái phép chất ma túy quy định hình phạt thế nào? | 1.00 | 0.75 | 0.29 | Retrieval Stage | Từ khóa tìm kiếm quá dài hoặc không tối ưu hóa các liên kết từ đồng nghĩa pháp lý. |
+| 3 | Nghệ sĩ hài Hữu Tín bị bắt vào năm nào vì liên quan đến chất ma túy? | 1.00 | 0.69 | 0.43 | Retrieval Stage | Từ khóa tìm kiếm quá dài hoặc không tối ưu hóa các liên kết từ đồng nghĩa pháp lý. |
 
 ---
 
