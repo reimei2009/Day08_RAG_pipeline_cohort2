@@ -1,0 +1,433 @@
+{
+  "legal_documents": [
+    {
+      "source_file": "73_2021_QH14_luat_phong_chong_ma_tuy.pdf",
+      "output_file": "data\\standardized\\legal\\73_2021_QH14_luat_phong_chong_ma_tuy.md",
+      "output_bytes": 80893,
+      "extracted_chars": 61402,
+      "status": "ok",
+      "method": "pypdf",
+      "meta": {
+        "method": "pypdf",
+        "pages": 31,
+        "chars": 61402,
+        "page_stats": [
+          {
+            "page": 1,
+            "chars": 1503
+          },
+          {
+            "page": 2,
+            "chars": 2192
+          },
+          {
+            "page": 3,
+            "chars": 1956
+          },
+          {
+            "page": 4,
+            "chars": 1793
+          },
+          {
+            "page": 5,
+            "chars": 2305
+          },
+          {
+            "page": 6,
+            "chars": 2022
+          },
+          {
+            "page": 7,
+            "chars": 1924
+          },
+          {
+            "page": 8,
+            "chars": 2120
+          },
+          {
+            "page": 9,
+            "chars": 2102
+          },
+          {
+            "page": 10,
+            "chars": 1945
+          },
+          {
+            "page": 11,
+            "chars": 2016
+          },
+          {
+            "page": 12,
+            "chars": 1994
+          },
+          {
+            "page": 13,
+            "chars": 1867
+          },
+          {
+            "page": 14,
+            "chars": 2025
+          },
+          {
+            "page": 15,
+            "chars": 1776
+          },
+          {
+            "page": 16,
+            "chars": 1916
+          },
+          {
+            "page": 17,
+            "chars": 1945
+          },
+          {
+            "page": 18,
+            "chars": 2002
+          },
+          {
+            "page": 19,
+            "chars": 2263
+          },
+          {
+            "page": 20,
+            "chars": 2171
+          },
+          {
+            "page": 21,
+            "chars": 1999
+          },
+          {
+            "page": 22,
+            "chars": 1851
+          },
+          {
+            "page": 23,
+            "chars": 2194
+          },
+          {
+            "page": 24,
+            "chars": 1923
+          },
+          {
+            "page": 25,
+            "chars": 1929
+          },
+          {
+            "page": 26,
+            "chars": 1708
+          },
+          {
+            "page": 27,
+            "chars": 1859
+          },
+          {
+            "page": 28,
+            "chars": 2064
+          },
+          {
+            "page": 29,
+            "chars": 1882
+          },
+          {
+            "page": 30,
+            "chars": 1934
+          },
+          {
+            "page": 31,
+            "chars": 1768
+          }
+        ],
+        "attempts": [
+          {
+            "method": "pymupdf_text",
+            "pages": 31,
+            "chars": 60074,
+            "page_stats": [
+              {
+                "page": 1,
+                "chars": 1633
+              },
+              {
+                "page": 2,
+                "chars": 2143
+              },
+              {
+                "page": 3,
+                "chars": 1922
+              },
+              {
+                "page": 4,
+                "chars": 1755
+              },
+              {
+                "page": 5,
+                "chars": 2249
+              },
+              {
+                "page": 6,
+                "chars": 1984
+              },
+              {
+                "page": 7,
+                "chars": 1850
+              },
+              {
+                "page": 8,
+                "chars": 2051
+              },
+              {
+                "page": 9,
+                "chars": 2043
+              },
+              {
+                "page": 10,
+                "chars": 1889
+              },
+              {
+                "page": 11,
+                "chars": 1987
+              },
+              {
+                "page": 12,
+                "chars": 1955
+              },
+              {
+                "page": 13,
+                "chars": 1825
+              },
+              {
+                "page": 14,
+                "chars": 1947
+              },
+              {
+                "page": 15,
+                "chars": 1734
+              },
+              {
+                "page": 16,
+                "chars": 1871
+              },
+              {
+                "page": 17,
+                "chars": 1863
+              },
+              {
+                "page": 18,
+                "chars": 1964
+              },
+              {
+                "page": 19,
+                "chars": 2192
+              },
+              {
+                "page": 20,
+                "chars": 2131
+              },
+              {
+                "page": 21,
+                "chars": 1971
+              },
+              {
+                "page": 22,
+                "chars": 1804
+              },
+              {
+                "page": 23,
+                "chars": 2125
+              },
+              {
+                "page": 24,
+                "chars": 1894
+              },
+              {
+                "page": 25,
+                "chars": 1893
+              },
+              {
+                "page": 26,
+                "chars": 1671
+              },
+              {
+                "page": 27,
+                "chars": 1823
+              },
+              {
+                "page": 28,
+                "chars": 2017
+              },
+              {
+                "page": 29,
+                "chars": 1837
+              },
+              {
+                "page": 30,
+                "chars": 1890
+              },
+              {
+                "page": 31,
+                "chars": 1707
+              }
+            ]
+          },
+          {
+            "method": "pypdf",
+            "pages": 31,
+            "chars": 61402,
+            "page_stats": [
+              {
+                "page": 1,
+                "chars": 1503
+              },
+              {
+                "page": 2,
+                "chars": 2192
+              },
+              {
+                "page": 3,
+                "chars": 1956
+              },
+              {
+                "page": 4,
+                "chars": 1793
+              },
+              {
+                "page": 5,
+                "chars": 2305
+              },
+              {
+                "page": 6,
+                "chars": 2022
+              },
+              {
+                "page": 7,
+                "chars": 1924
+              },
+              {
+                "page": 8,
+                "chars": 2120
+              },
+              {
+                "page": 9,
+                "chars": 2102
+              },
+              {
+                "page": 10,
+                "chars": 1945
+              },
+              {
+                "page": 11,
+                "chars": 2016
+              },
+              {
+                "page": 12,
+                "chars": 1994
+              },
+              {
+                "page": 13,
+                "chars": 1867
+              },
+              {
+                "page": 14,
+                "chars": 2025
+              },
+              {
+                "page": 15,
+                "chars": 1776
+              },
+              {
+                "page": 16,
+                "chars": 1916
+              },
+              {
+                "page": 17,
+                "chars": 1945
+              },
+              {
+                "page": 18,
+                "chars": 2002
+              },
+              {
+                "page": 19,
+                "chars": 2263
+              },
+              {
+                "page": 20,
+                "chars": 2171
+              },
+              {
+                "page": 21,
+                "chars": 1999
+              },
+              {
+                "page": 22,
+                "chars": 1851
+              },
+              {
+                "page": 23,
+                "chars": 2194
+              },
+              {
+                "page": 24,
+                "chars": 1923
+              },
+              {
+                "page": 25,
+                "chars": 1929
+              },
+              {
+                "page": 26,
+                "chars": 1708
+              },
+              {
+                "page": 27,
+                "chars": 1859
+              },
+              {
+                "page": 28,
+                "chars": 2064
+              },
+              {
+                "page": 29,
+                "chars": 1882
+              },
+              {
+                "page": 30,
+                "chars": 1934
+              },
+              {
+                "page": 31,
+                "chars": 1768
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source_file": "data\\landing\\legal_html\\105_2021_ND_CP_huong_dan_luat_phong_chong_ma_tuy.json",
+      "output_file": "data\\standardized\\legal\\105_2021_ND_CP_huong_dan_luat_phong_chong_ma_tuy.md",
+      "output_bytes": 320419,
+      "extracted_chars": 269528,
+      "status": "ok",
+      "method": "html_text_cleaned",
+      "source_url": "https://thuvienphapluat.vn/van-ban/Van-hoa-Xa-hoi/Nghi-dinh-105-2021-ND-CP-huong-dan-Luat-Phong-chong-ma-tuy-496664.aspx"
+    },
+    {
+      "source_file": "data\\landing\\legal_html\\57_2022_ND_CP_danh_muc_chat_ma_tuy_tien_chat.json",
+      "output_file": "data\\standardized\\legal\\57_2022_ND_CP_danh_muc_chat_ma_tuy_tien_chat.md",
+      "output_bytes": 149543,
+      "extracted_chars": 134137,
+      "status": "ok",
+      "method": "html_text_cleaned",
+      "source_url": "https://thuvienphapluat.vn/van-ban/Van-hoa-Xa-hoi/Nghi-dinh-57-2022-ND-CP-danh-muc-chat-ma-tuy-va-tien-chat-527507.aspx"
+    }
+  ],
+  "summary": {
+    "total_legal_markdown_files": 3,
+    "strategy": {
+      "73_2021_QH14": "official_pdf_text_layer",
+      "105_2021_ND_CP": "html_text_override_because_official_pdf_is_scan",
+      "57_2022_ND_CP": "html_text_override_because_official_pdf_is_scan"
+    }
+  }
+}
