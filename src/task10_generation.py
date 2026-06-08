@@ -75,20 +75,12 @@ def reorder_for_llm(chunks: list[dict]) -> list[dict]:
     Returns:
         List reordered để maximize LLM attention.
     """
-    # TODO: Implement reordering
-    #
-    # if len(chunks) <= 2:
-    #     return chunks
-    #
-    # # Split into first half (important → đầu) and second half (important → cuối)
-    # reordered = []
-    # for i in range(0, len(chunks), 2):
-    #     reordered.append(chunks[i])  # Odd positions go first
-    # for i in range(len(chunks) - 1 - (len(chunks) % 2 == 0), 0, -2):
-    #     reordered.append(chunks[i])  # Even positions go last (reversed)
-    #
-    # return reordered
-    raise NotImplementedError("Implement reorder_for_llm")
+    if len(chunks) <= 2:
+        return chunks
+
+    front = [chunks[i] for i in range(0, len(chunks), 2)]
+    back = [chunks[i] for i in range(1, len(chunks), 2)]
+    return front + list(reversed(back))
 
 
 # =============================================================================
@@ -106,18 +98,48 @@ def format_context(chunks: list[dict]) -> str:
     Returns:
         Formatted context string.
     """
-    # TODO: Implement context formatting
-    #
-    # context_parts = []
-    # for i, chunk in enumerate(chunks, 1):
-    #     source = chunk.get("metadata", {}).get("source", f"Source {i}")
-    #     doc_type = chunk.get("metadata", {}).get("type", "unknown")
-    #     context_parts.append(
-    #         f"[Document {i} | Source: {source} | Type: {doc_type}]\n"
-    #         f"{chunk['content']}\n"
-    #     )
-    # return "\n---\n".join(context_parts)
-    raise NotImplementedError("Implement format_context")
+    context_parts = []
+    for i, chunk in enumerate(chunks, 1):
+        metadata = chunk.get("metadata", {}) or {}
+        source = metadata.get("source") or metadata.get("path") or f"Source {i}"
+        doc_type = metadata.get("type") or metadata.get("doc_type") or "unknown"
+        score = float(chunk.get("score", 0.0) or 0.0)
+        content = chunk.get("content", "").strip()
+
+        context_parts.append(
+            f"[Document {i} | Source: {source} | Type: {doc_type} | Score: {score:.3f}]\n"
+            f"{content}\n"
+        )
+
+    return "\n---\n".join(context_parts)
+
+
+def _source_label(chunk: dict, index: int) -> str:
+    metadata = chunk.get("metadata", {}) or {}
+    source = metadata.get("source") or metadata.get("path") or f"Source {index}"
+    return str(source)
+
+
+def _fallback_answer(query: str, chunks: list[dict]) -> str:
+    if not chunks:
+        return (
+            "Tôi không thể xác minh thông tin này từ nguồn hiện có. "
+            "Pipeline chưa lấy được context phù hợp để trả lời có citation."
+        )
+
+    lines = [
+        "Dựa trên các nguồn truy xuất được, đây là phần thông tin có thể kiểm chứng:"
+    ]
+    for i, chunk in enumerate(chunks[:3], 1):
+        source = _source_label(chunk, i)
+        snippet = " ".join(chunk.get("content", "").split())[:350]
+        if snippet:
+            lines.append(f"- {snippet} [{source}]")
+
+    lines.append(
+        "Nếu câu hỏi cần kết luận chi tiết hơn, tôi không thể xác minh thông tin ngoài các nguồn trên."
+    )
+    return "\n".join(lines)
 
 
 # =============================================================================
@@ -146,43 +168,40 @@ def generate_with_citation(query: str, top_k: int = TOP_K) -> dict:
             'retrieval_source': str  # 'hybrid' hoặc 'pageindex'
         }
     """
-    # TODO: Implement generation pipeline
-    #
-    # # Step 1: Retrieve
-    # chunks = retrieve(query, top_k=top_k)
-    #
-    # # Step 2: Reorder
-    # reordered = reorder_for_llm(chunks)
-    #
-    # # Step 3: Format context
-    # context = format_context(reordered)
-    #
-    # # Step 4: Build prompt
-    # user_message = f"""Context:\n{context}\n\n---\n\nQuestion: {query}"""
-    #
-    # # Step 5: Call LLM
-    # from openai import OpenAI
-    # client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    #
-    # response = client.chat.completions.create(
-    #     model="gpt-4o-mini",
-    #     messages=[
-    #         {"role": "system", "content": SYSTEM_PROMPT},
-    #         {"role": "user", "content": user_message}
-    #     ],
-    #     temperature=TEMPERATURE,
-    #     top_p=TOP_P,
-    # )
-    #
-    # answer = response.choices[0].message.content
-    #
-    # # Step 6: Return
-    # return {
-    #     "answer": answer,
-    #     "sources": chunks,
-    #     "retrieval_source": chunks[0].get("source", "hybrid") if chunks else "none"
-    # }
-    raise NotImplementedError("Implement generate_with_citation")
+    chunks = retrieve(query, top_k=top_k)
+    reordered = reorder_for_llm(chunks)
+    context = format_context(reordered)
+    retrieval_source = chunks[0].get("source", "hybrid") if chunks else "none"
+
+    api_key = os.getenv("OPENAI_API_KEY", "")
+    has_real_api_key = bool(api_key and api_key != "sk-xxx")
+
+    if has_real_api_key and chunks:
+        try:
+            from openai import OpenAI
+
+            client = OpenAI(api_key=api_key)
+            user_message = f"Context:\n{context}\n\n---\n\nQuestion: {query}"
+            response = client.chat.completions.create(
+                model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": user_message},
+                ],
+                temperature=TEMPERATURE,
+                top_p=TOP_P,
+            )
+            answer = response.choices[0].message.content or ""
+        except Exception:
+            answer = _fallback_answer(query, reordered)
+    else:
+        answer = _fallback_answer(query, reordered)
+
+    return {
+        "answer": answer,
+        "sources": chunks,
+        "retrieval_source": retrieval_source,
+    }
 
 
 if __name__ == "__main__":
