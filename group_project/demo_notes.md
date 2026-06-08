@@ -18,7 +18,7 @@ Trình bày khả năng hoạt động của giao diện Streamlit, quy trình h
 3. **Thực hiện Demo 3 câu hỏi**:
    - *Câu 1*: Chọn câu hỏi "Hình phạt cho tội tàng trữ trái phép chất ma tuý là gì?" từ sidebar và nhập vào khung chat. Đợi chatbot trả lời và mở rộng phần `📄 Nguồn tài liệu tham khảo` để cho thấy văn bản pháp luật được sử dụng.
    - *Câu 2*: Đặt câu hỏi "Luật Phòng chống ma tuý 2021 quy định các hình thức cai nghiện nào?". Nhấn mạnh tính năng trích dẫn trong câu trả lời khớp với nguồn tài liệu bên dưới (ví dụ `[Luật Phòng chống ma tuý 2021, Điều 3]`).
-   - *Câu 3*: Đặt câu hỏi "Những nghệ sĩ nào đã bị bắt vì liên quan tới ma tuý?". Kiểm tra xem loại tài liệu được trích xuất có phải là tin tức (`news`) thay vì pháp lý (`legal`) hay không.
+   - *Câu 3*: Đặt câu hỏi "Những nguồn nào được dùng để trả lời câu hỏi này?". Kiểm tra khả năng báo cáo lại nguồn tài liệu một cách chuẩn xác từ RAG chatbot.
 
 4. **Kiểm tra ngoại lệ (Fallback / Xử lý biên)**:
    - Thử đặt một câu hỏi không liên quan để xem giao diện có crash không (đảm bảo hệ thống vẫn sẽ hiển thị câu trả lời fallback từ LLM cùng với một danh sách source rỗng an toàn, hoặc không crash khi pipeline trả về list rỗng).

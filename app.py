@@ -47,7 +47,7 @@ def main():
         st.header("Câu hỏi Demo")
         st.markdown("- Hình phạt cho tội tàng trữ trái phép chất ma tuý là gì?")
         st.markdown("- Luật Phòng chống ma tuý 2021 quy định các hình thức cai nghiện nào?")
-        st.markdown("- Những nghệ sĩ nào đã bị bắt vì liên quan tới ma tuý?")
+        st.markdown("- Những nguồn nào được dùng để trả lời câu hỏi này?")
 
     # Initialize chat history in session_state
     if "messages" not in st.session_state:
