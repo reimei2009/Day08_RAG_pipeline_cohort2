@@ -217,10 +217,8 @@ flowchart LR
 # Cài đặt dependencies
 pip install -r requirements.txt
 
-# Chạy app
+# Chạy RAG Chatbot UI (Streamlit)
 streamlit run app.py
-# hoặc
-chainlit run app.py
 ```
 
 ---
