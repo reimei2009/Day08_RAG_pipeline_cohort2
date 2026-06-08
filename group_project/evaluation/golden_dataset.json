@@ -5,13 +5,73 @@
     "expected_context": "Bộ luật Hình sự 2015, Điều 249"
   },
   {
+    "question": "Hình phạt đối với tội sản xuất trái phép chất ma túy theo Điều 248 Bộ luật Hình sự?",
+    "expected_answer": "Tội sản xuất trái phép chất ma túy bị phạt tù từ 02 năm đến 07 năm. Hình phạt cao nhất cho tội này là phạt tù 20 năm, tù chung thân hoặc tử hình.",
+    "expected_context": "Bộ luật Hình sự 2015, Điều 248"
+  },
+  {
+    "question": "Hình phạt cao nhất cho tội vận chuyển trái phép chất ma túy là gì?",
+    "expected_answer": "Hình phạt cao nhất cho tội vận chuyển trái phép chất ma túy theo Điều 250 Bộ luật Hình sự là tử hình đối với các trường hợp vận chuyển khối lượng lớn (như Heroine từ 100g trở lên).",
+    "expected_context": "Bộ luật Hình sự 2015, Điều 250"
+  },
+  {
+    "question": "Người phạm tội mua bán trái phép chất ma túy có thể bị phạt bao nhiêu năm tù?",
+    "expected_answer": "Theo Điều 251 Bộ luật Hình sự, tội mua bán trái phép chất ma túy bị phạt tù tối thiểu là từ 02 năm đến 07 năm, và cao nhất là phạt tù 20 năm, tù chung thân hoặc tử hình tùy thuộc vào khối lượng chất ma túy và tính chất nghiêm trọng của vụ án.",
+    "expected_context": "Bộ luật Hình sự 2015, Điều 251"
+  },
+  {
+    "question": "Tội tổ chức sử dụng trái phép chất ma túy quy định hình phạt thế nào?",
+    "expected_answer": "Theo Điều 255 Bộ luật Hình sự, tội tổ chức sử dụng trái phép chất ma túy bị phạt tù từ 02 năm đến 07 năm; nếu phạm tội thuộc các trường hợp nghiêm trọng hơn thì bị phạt tù từ 07 năm đến 15 năm, từ 15 năm đến 20 năm, hoặc tù chung thân.",
+    "expected_context": "Bộ luật Hình sự 2015, Điều 255"
+  },
+  {
+    "question": "Trẻ vị thành niên (từ đủ 14 tuổi đến dưới 16 tuổi) phải chịu trách nhiệm hình sự về tội ma túy nào?",
+    "expected_answer": "Người từ đủ 14 tuổi đến dưới 16 tuổi phải chịu trách nhiệm hình sự về tội phạm rất nghiêm trọng hoặc tội phạm đặc biệt nghiêm trọng quy định tại các điều 248, 249, 250, 251, 252 Bộ luật Hình sự.",
+    "expected_context": "Bộ luật Hình sự 2015, Điều 12"
+  },
+  {
     "question": "Luật Phòng chống ma tuý 2021 quy định những hình thức cai nghiện nào?",
     "expected_answer": "Cai nghiện tự nguyện tại gia đình, cai nghiện tự nguyện tại cộng đồng, cai nghiện tự nguyện tại cơ sở cai nghiện, và cai nghiện bắt buộc tại cơ sở cai nghiện.",
     "expected_context": "Luật Phòng chống ma tuý 2021, Chương V"
   },
   {
+    "question": "Thời hạn cai nghiện ma túy bắt buộc đối với người từ đủ 18 tuổi trở lên là bao lâu?",
+    "expected_answer": "Thời hạn cai nghiện ma túy bắt buộc đối với người từ đủ 18 tuổi trở lên là từ 12 tháng đến 24 tháng.",
+    "expected_context": "Luật Phòng chống ma tuý 2021, Điều 38"
+  },
+  {
+    "question": "Đối tượng nào bị áp dụng biện pháp xử lý hành chính đưa vào cơ sở cai nghiện bắt buộc?",
+    "expected_answer": "Người nghiện ma túy từ đủ 18 tuổi trở lên bị đưa vào cơ sở cai nghiện bắt buộc nếu thuộc trường hợp không đăng ký, không thực hiện cai nghiện tự nguyện, hoặc bị phát hiện sử dụng trái phép chất ma túy trong thời gian cai nghiện tự nguyện.",
+    "expected_context": "Luật Phòng chống ma tuý 2021, Điều 32"
+  },
+  {
+    "question": "Người sử dụng trái phép chất ma túy bị lập danh sách và theo dõi trong thời gian bao lâu?",
+    "expected_answer": "Người sử dụng trái phép chất ma túy bị lập danh sách và quản lý, theo dõi trong thời hạn 01 năm kể từ ngày có hành vi sử dụng trái phép chất ma túy gần nhất.",
+    "expected_context": "Luật Phòng chống ma tuý 2021, Điều 23"
+  },
+  {
     "question": "Danh mục các chất ma tuý thuộc nhóm I theo quy định pháp luật Việt Nam gồm những chất nào?",
     "expected_answer": "Nhóm I gồm các chất ma tuý tuyệt đối cấm sử dụng trong y học và đời sống, bao gồm heroin, cocaine, methamphetamine, MDMA (ecstasy), cannabis (cần sa), và các chất tương tự.",
     "expected_context": "Nghị định 57/2022/NĐ-CP, Phụ lục I"
+  },
+  {
+    "question": "Danh mục II của Nghị định 57/2022/NĐ-CP quy định những chất ma túy như thế nào?",
+    "expected_answer": "Danh mục II bao gồm các chất ma túy được dùng hạn chế trong phân tích, kiểm nghiệm, nghiên cứu khoa học, điều tra tội phạm hoặc trong lĩnh vực y tế theo quy định của cơ quan có thẩm quyền, ví dụ như morphine, codeine, fentanyl.",
+    "expected_context": "Nghị định 57/2022/NĐ-CP, Phụ lục II"
+  },
+  {
+    "question": "Chất ma túy Ketamine thuộc danh mục nào theo quy định pháp luật Việt Nam?",
+    "expected_answer": "Ketamine thuộc Danh mục III - Các chất ma túy được dùng trong y học và đời sống xã hội dưới sự kiểm soát nghiêm ngặt của cơ quan nhà nước có thẩm quyền.",
+    "expected_context": "Nghị định 57/2022/NĐ-CP, Phụ lục III"
+  },
+  {
+    "question": "Nghệ sĩ hài Hữu Tín bị bắt vào năm nào vì liên quan đến chất ma túy?",
+    "expected_answer": "Nghệ sĩ hài Hữu Tín bị lực lượng công an bắt quả tang khi đang sử dụng trái phép chất ma túy tại căn hộ ở Quận 8, TP.HCM vào tháng 6 năm 2022.",
+    "expected_context": "Báo chí đưa tin tháng 6/2022 về vụ việc Hữu Tín sử dụng ma túy"
+  },
+  {
+    "question": "Vụ việc ca sĩ Chi Dân bị lực lượng chức năng kiểm tra và phát hiện liên quan đến ma túy diễn ra khi nào?",
+    "expected_answer": "Ca sĩ Chi Dân bị lực lượng công an kiểm tra, phát hiện dương tính với chất ma túy vào tháng 11 năm 2024 tại TP.HCM.",
+    "expected_context": "Tin tức báo chí tháng 11/2024 về vụ việc Chi Dân bị tạm giữ"
   }
 ]
